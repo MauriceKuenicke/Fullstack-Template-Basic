@@ -1,0 +1,8 @@
+fastapi[standard]
+SQLAlchemy
+alembic
+celery
+redis
+psycopg2-binary
+cryptography
+bcrypt

@@ -1,0 +1,76 @@
+name: TemplateApp-PROD
+services:
+  frontend:
+    container_name: Frontend
+    build:
+      context: frontend/
+      dockerfile: Dockerfile-prod
+    environment:
+      VITE_BACKEND_HOST: ${BACKEND_HOST}
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+  backend:
+    container_name: BackendAPI
+    build: backend/
+    command: >
+      sh -c "alembic upgrade head &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: ${DB_HOST}
+    ports:
+      - "8000:8000"
+    depends_on:
+      database:
+        condition: service_healthy
+
+  worker:
+    container_name: BackgroundWorker
+    build: backend/
+    command: celery -A celery_worker.main:celery_app worker --loglevel=info
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: ${DB_HOST}
+    depends_on:
+      - redis
+
+  database:   # Should probably be removed from the production build and replaced with a separate db instance
+    container_name: PostgresDB
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:  # Necessary because depends_on will only validate that the container is running but not the DB instance itself.
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    container_name: Redis
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  redis-insight:
+    container_name: RedisInsightUI
+    image: redis/redisinsight:latest
+    restart: always
+    ports:
+      - "5540:5540"
+    depends_on:
+      - redis
