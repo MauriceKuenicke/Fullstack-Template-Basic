@@ -20,7 +20,7 @@ def create_new_sf_persona(data: UserCreate,
 
 @router.get("/list",
             response_model=list[UserRead],
-            summary="List available Snowflake personas.")
+            summary="List available users.")
 def list_available_sf_personas(db: Session = Depends(deps.get_main_db)):
     user_service = UserService(db)
     user_list = user_service.list_available_users()

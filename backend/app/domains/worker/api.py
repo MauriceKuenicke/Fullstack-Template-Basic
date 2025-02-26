@@ -16,7 +16,7 @@ def trigger_sql_test_case_run(user_uuid: str,
                               db: Session = Depends(deps.get_main_db)) -> JSONResponse:
     execution_uuid = str(uuid4())
     task_result = celery_app.send_task(
-        'celery_worker.tasks.execute_single_sql_test',
+        'celery_worker.tasks.execute_something',
         args=[user_uuid],
         task_id=execution_uuid
     )
@@ -24,6 +24,6 @@ def trigger_sql_test_case_run(user_uuid: str,
         raise HTTPException(status_code=500, detail="Something went wrong with the task execution identifiers.")
 
     return JSONResponse({
-        "message": "Test successfully started.",
+        "message": "Task successfully started.",
         "execution_uuid": task_result.id
     }, status_code=200)

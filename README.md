@@ -23,7 +23,19 @@ npm install
 docker compose -f docker-compose.dev.yaml up --build
 ```
 
+Services are by default accessible at:
 
+| Service         | Host URL                   |
+|-----------------|----------------------------|
+| Frontend        | http://localhost:5173/     |
+| Backend Swagger | http://localhost:8000/docs |
+| Backend         | http://localhost:8000      |
+| Redis Insight   | http://localhost:5540/     |
+
+
+
+## Redis Insight
+Connect the internal Redis DB using `redis://default@redis:6379`.
 
 
 # FAQs
