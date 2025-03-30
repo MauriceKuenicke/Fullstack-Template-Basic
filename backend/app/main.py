@@ -8,7 +8,8 @@ from app.common.database import get_backend_db_engine
 
 
 app = FastAPI(title="Template Backend API",
-              swagger_ui_parameters={"defaultModelsExpandDepth": -1})
+              swagger_ui_parameters={"defaultModelsExpandDepth": -1},
+              root_path='/api/')
 
 app.add_middleware(
     CORSMiddleware,

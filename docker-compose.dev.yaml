@@ -1,5 +1,16 @@
 name: TemplateApp-DEV
 services:
+  nginx:
+    container_name: Nginx-Dev
+    image: nginx:alpine
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+
   frontend:
     container_name: Frontend-Dev
     build:
@@ -10,8 +21,6 @@ services:
     volumes:
       - ./frontend:/app
       - node_modules:/app/node_modules
-    ports:
-      - "5173:5173"
     depends_on:
       - backend
 
@@ -28,8 +37,6 @@ services:
       DB_HOST: ${DB_HOST}
     volumes:
       - ./backend:/app
-    ports:
-      - "8000:8000"
     depends_on:
       database:
         condition: service_healthy

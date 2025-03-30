@@ -25,12 +25,12 @@ docker compose -f docker-compose.dev.yaml up --build
 
 Services are by default accessible at:
 
-| Service         | Host URL                   |
-|-----------------|----------------------------|
-| Frontend        | http://localhost:5173/     |
-| Backend Swagger | http://localhost:8000/docs |
-| Backend         | http://localhost:8000      |
-| Redis Insight   | http://localhost:5540/     |
+| Service         | Host URL                  |
+|-----------------|---------------------------|
+| Frontend        | http://localhost/         |
+| Backend Swagger | http://localhost/api/docs |
+| Backend         | http://localhost/api/     |
+| Redis Insight   | http://localhost:5540/    |
 
 
 
